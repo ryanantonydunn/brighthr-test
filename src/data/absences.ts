@@ -14,6 +14,25 @@ interface Absence {
   absenceType: string;
   approved: boolean;
   employee: Employee;
+  hasConflict: boolean;
+}
+
+type AbsenceRaw = Omit<Absence, "hasConflict">;
+
+interface Conflict {
+  conflicts: boolean;
+}
+
+async function loadAbsences() {
+  const response = await fetch(`${apiUrl}/api/absences`);
+  const json = await response.json();
+  return json as AbsenceRaw[];
+}
+
+async function loadConflict(absenceId: number) {
+  const response = await fetch(`${apiUrl}/api/conflict/${absenceId}`);
+  const json = await response.json();
+  return json as Conflict;
 }
 
 /**
@@ -23,17 +42,24 @@ export function useAbsences() {
   const [data, setData] = React.useState<Absence[]>([]);
   const [hasLoaded, setHasLoaded] = React.useState(false);
   React.useEffect(() => {
-    async function loadAbsences() {
-      try {
-        const response = await fetch(`${apiUrl}/api/absences`);
-        const json = (await response.json()) as Absence[];
-        setData(json);
-        setHasLoaded(true);
-      } catch (e) {
-        console.error(e);
-      }
+    async function getAbsences() {
+      // Load all absences
+      const absencesRaw = await loadAbsences();
+
+      // Load all conflicts associated with each absence
+      const conflicts = await Promise.all(absencesRaw.map((absence) => loadConflict(absence.id)));
+
+      // Combine conflict information with absence information
+      const absencesWithConflicts = absencesRaw.map((absence, i) => ({
+        ...absence,
+        hasConflict: conflicts[i].conflicts,
+      }));
+
+      // Set the data in local state to trigger re-renders where hook is used
+      setData(absencesWithConflicts);
+      setHasLoaded(true);
     }
-    loadAbsences();
+    getAbsences();
   }, []);
   return { hasLoaded, data };
 }

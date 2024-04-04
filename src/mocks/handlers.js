@@ -21,7 +21,8 @@ export const handlers = [
       },
     ]);
   }),
-  http.get("/api/conflict/:id", () => {
-    return HttpResponse.json([]);
+  http.get("/api/conflict/:id", (req) => {
+    const { id } = req.params;
+    return HttpResponse.json({ conflicts: id === "0" }); // absence id '0' has conflicts, '1' does not
   }),
 ];

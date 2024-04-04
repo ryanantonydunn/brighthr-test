@@ -12,7 +12,11 @@ export function App() {
     <main className="h-screen overflow-hidden">
       <h1>Absences</h1>
       {absences.data.length ? (
-        absences.data.map((absence) => <div key={absence.id}>{absence.absenceType}</div>)
+        absences.data.map((absence) => (
+          <div key={absence.id}>
+            {absence.absenceType} {absence.hasConflict ? "Yes" : "No"}
+          </div>
+        ))
       ) : (
         <div>No absences to display</div>
       )}
