@@ -62,11 +62,13 @@ it("sorts absences by start date", async () => {
   });
 });
 
-// TODO: shows loading screen
+// TODO: sorts absences by endDate
 
 // TODO: sorts absences by type
 
 // TODO: sorts absences by name
+
+// TODO: shows loading screen
 
 // TODO: shows an employees absences when name is clicked
 
