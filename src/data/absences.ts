@@ -1,6 +1,10 @@
 import React from "react";
 import { apiUrl } from "../mocks/api-url";
 
+export type AbsenceType = "SICKNESS" | "ANNUAL_LEAVE" | "MEDICAL";
+
+export type SortKey = "id" | "startDate";
+
 interface Employee {
   id: string;
   firstName: string;
@@ -11,7 +15,7 @@ interface Absence {
   id: number;
   startDate: string;
   days: number;
-  absenceType: string;
+  absenceType: AbsenceType;
   approved: boolean;
   employee: Employee;
   hasConflict: boolean;
