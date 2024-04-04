@@ -2,9 +2,10 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { App } from "./components/App";
 import "./index.css";
+import { isMocking } from "./mocks/api-url";
 
 async function enableMocking() {
-  if (import.meta.env.MODE === "mocking") {
+  if (isMocking) {
     const { worker } = await import("./mocks/browser");
     return worker.start();
   }
